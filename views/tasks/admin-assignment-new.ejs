@@ -1,0 +1,88 @@
+<%- include('../partials/admin-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="tag">Administration</p>
+    <h1>Assign Assignment</h1>
+    <p class="muted">Create a new assignment and assign it directly to a student user.</p>
+  </div>
+  <a href="/manage-assignments" class="button secondary">Back</a>
+</section>
+
+<section class="card">
+  <form action="/manage-assignments" method="POST" enctype="multipart/form-data" class="form-grid two-columns">
+    <label>
+      Assignment Title
+      <input type="text" name="title" required />
+    </label>
+
+    <label>
+      Subject
+      <input type="text" name="subject" required />
+    </label>
+
+    <label>
+      Course or Class
+      <input type="text" name="course" />
+    </label>
+
+    <label>
+      Deadline
+      <input type="datetime-local" name="deadline" required />
+    </label>
+
+    <label>
+      Assignment Type
+      <select name="assignmentType" required>
+        <option value="Assignment" selected>Assignment</option>
+        <option value="Homework">Homework</option>
+        <option value="Project">Project</option>
+        <option value="Exam Prep">Exam Prep</option>
+        <option value="Notes">Notes</option>
+        <option value="Presentation">Presentation</option>
+      </select>
+    </label>
+
+    <label>
+      Priority
+      <select name="priority" required>
+        <option value="High">High</option>
+        <option value="Medium" selected>Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </label>
+
+    <label>
+      Status
+      <select name="status" required>
+        <option value="Pending" selected>Pending</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </label>
+
+    <label>
+      Assign To
+      <select name="assignedTo" required>
+        <option value="">Select user</option>
+        <% users.forEach((user) => { %>
+          <option value="<%= user._id %>"><%= user.name %> (<%= user.email %>)</option>
+        <% }) %>
+      </select>
+    </label>
+
+    <label class="full-width">
+      Description
+      <textarea name="description" rows="5"></textarea>
+    </label>
+
+    <label class="full-width">
+      Attachment (Optional)
+      <input type="file" name="file" accept=".pdf,image/*" />
+    </label>
+
+    <div class="full-width form-actions">
+      <button type="submit" class="button">Assign Assignment</button>
+      <a href="/manage-assignments" class="button secondary">Cancel</a>
+    </div>
+  </form>
+</section>
+<%- include('../partials/admin-shell-end') %>

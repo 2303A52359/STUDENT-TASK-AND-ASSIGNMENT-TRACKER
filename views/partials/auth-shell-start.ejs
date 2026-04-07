@@ -1,0 +1,17 @@
+<%- include('head', { title, currentUser: null }) %>
+<main class="auth-shell">
+  <section class="auth-panel auth-panel-brand">
+    <p class="tag">Student Productivity</p>
+    <h1>Student Task and Assignment Tracker</h1>
+    <p>
+      Organize assignments, manage deadlines, and give administrators a clear view of student progress.
+    </p>
+    <ul class="feature-list">
+      <li>Session-based authentication</li>
+      <li>Admin user management</li>
+      <li>Task and assignment tracking</li>
+      <li>Charts for monthly and priority insights</li>
+    </ul>
+  </section>
+  <section class="auth-panel">
+    <%- include('flash') %>

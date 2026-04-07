@@ -1,0 +1,35 @@
+<%- include('../partials/user-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="tag">Profile Settings</p>
+    <h1>Edit Profile</h1>
+    <p class="muted">Update your personal information and profile picture.</p>
+  </div>
+  <a href="/profile" class="button secondary">Back to Profile</a>
+</section>
+
+<section class="card">
+  <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data" class="form-grid two-columns">
+    <label>
+      Name
+      <input type="text" name="name" value="<%= user.name %>" required />
+    </label>
+
+    <label>
+      Email
+      <input type="email" name="email" value="<%= user.email %>" required />
+    </label>
+
+    <label class="full-width">
+      Profile Picture
+      <input type="file" name="profilePic" accept="image/*" />
+      <span class="muted small-text">Leave this empty to keep the current picture.</span>
+    </label>
+
+    <div class="full-width form-actions">
+      <button type="submit" class="button">Save Profile</button>
+      <a href="/profile" class="button secondary">Cancel</a>
+    </div>
+  </form>
+</section>
+<%- include('../partials/user-shell-end') %>

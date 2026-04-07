@@ -1,0 +1,104 @@
+<%- include('../partials/user-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header page-header-inline page-header-glass">
+  <div>
+    <p class="tag">Task Management</p>
+    <h1>My Tasks</h1>
+    <p class="muted">View the tasks assigned by the admin and update only their completion status.</p>
+  </div>
+</section>
+
+<section class="mini-stats-grid">
+  <article class="mini-stat-card">
+    <span>Pending</span>
+    <strong><%= summary.pending %></strong>
+  </article>
+  <article class="mini-stat-card">
+    <span>Completed</span>
+    <strong><%= summary.completed %></strong>
+  </article>
+  <article class="mini-stat-card mini-stat-card-danger">
+    <span>Overdue</span>
+    <strong><%= summary.overdue %></strong>
+  </article>
+</section>
+
+<section class="card">
+  <form method="GET" action="/tasks" class="toolbar">
+    <input
+      type="text"
+      name="search"
+      placeholder="Search by title, description, or subject"
+      value="<%= query.search %>"
+    />
+    <select name="status">
+      <option value="" <%= query.status === '' ? 'selected' : '' %>>All Status</option>
+      <option value="pending" <%= query.status === 'pending' ? 'selected' : '' %>>Pending</option>
+      <option value="completed" <%= query.status === 'completed' ? 'selected' : '' %>>Completed</option>
+    </select>
+    <select name="priority">
+      <option value="" <%= query.priority === '' ? 'selected' : '' %>>All Priorities</option>
+      <option value="High" <%= query.priority === 'High' ? 'selected' : '' %>>High</option>
+      <option value="Medium" <%= query.priority === 'Medium' ? 'selected' : '' %>>Medium</option>
+      <option value="Low" <%= query.priority === 'Low' ? 'selected' : '' %>>Low</option>
+    </select>
+    <select name="sort">
+      <option value="newest" <%= query.sort === 'newest' ? 'selected' : '' %>>Newest</option>
+      <option value="oldest" <%= query.sort === 'oldest' ? 'selected' : '' %>>Oldest</option>
+      <option value="deadlineAsc" <%= query.sort === 'deadlineAsc' ? 'selected' : '' %>>Deadline Asc</option>
+      <option value="deadlineDesc" <%= query.sort === 'deadlineDesc' ? 'selected' : '' %>>Deadline Desc</option>
+      <option value="priority" <%= query.sort === 'priority' ? 'selected' : '' %>>Priority</option>
+    </select>
+    <button type="submit" class="button">Apply</button>
+  </form>
+
+  <% if (!tasks.length) { %>
+    <div class="empty-state">
+      <p>No assigned tasks found yet.</p>
+    </div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Subject</th>
+            <th>Deadline</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Submission</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tasks.forEach((task) => { %>
+            <% const isOverdue = !task.completed && new Date(task.deadline) < new Date(); %>
+            <tr class="<%= isOverdue ? 'row-overdue' : '' %>">
+              <td>
+                <strong><%= task.title %></strong>
+                <div class="muted small-text"><%= task.description || 'No description' %></div>
+              </td>
+              <td><%= task.subject || 'General' %></td>
+              <td><%= new Date(task.deadline).toLocaleString() %></td>
+              <td><span class="priority priority-<%= task.priority.toLowerCase() %>"><%= task.priority %></span></td>
+              <td>
+                <span class="status <%= isOverdue ? 'status-danger' : task.completed ? 'status-complete' : 'status-pending' %>">
+                  <%= isOverdue ? 'Overdue' : task.completed ? 'Completed' : 'Pending' %>
+                </span>
+              </td>
+              <td><%= task.submissionFile ? 'Submitted' : 'Not Submitted' %></td>
+              <td>
+                <div class="table-actions">
+                  <a href="/tasks/<%= task._id %>" class="button small secondary">View</a>
+                  <form action="/tasks/<%= task._id %>/toggle?_method=PATCH" method="POST">
+                    <button type="submit" class="button small"><%= task.completed ? 'Reopen' : 'Complete' %></button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+<%- include('../partials/user-shell-end') %>

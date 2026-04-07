@@ -1,0 +1,156 @@
+<%- include('../partials/admin-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-hero">
+  <div class="page-hero-copy">
+    <p class="tag">Administration</p>
+    <h1>Admin Dashboard</h1>
+    <p class="muted">Platform controls only: monitor activity, manage all tasks, and manage user accounts.</p>
+    <div class="hero-inline-stats">
+      <span>Total Users: <strong><%= stats.totalUsers %></strong></span>
+      <span>Pending Items: <strong><%= stats.pendingTasks %></strong></span>
+      <span>Overdue Items: <strong><%= stats.overdueTasks %></strong></span>
+    </div>
+  </div>
+  <div class="page-hero-actions">
+    <a href="/manage-tasks" class="button">Manage Tasks</a>
+    <a href="/manage-assignments" class="button secondary">Manage Assignments</a>
+    <a href="/users" class="button secondary">Manage Users</a>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <article class="stat-card">
+    <span>Total Users</span>
+    <strong><%= stats.totalUsers %></strong>
+  </article>
+  <article class="stat-card">
+    <span>Total Items</span>
+    <strong><%= stats.totalTasks %></strong>
+  </article>
+  <article class="stat-card">
+    <span>Completed</span>
+    <strong><%= stats.completedTasks %></strong>
+  </article>
+  <article class="stat-card">
+    <span>Pending</span>
+    <strong><%= stats.pendingTasks %></strong>
+  </article>
+</section>
+
+<section class="tracker-split-grid">
+  <article class="card tracker-card">
+    <div class="card-header">
+      <div>
+        <p class="tag">Task Oversight</p>
+        <h2>Manage Tasks</h2>
+      </div>
+      <a href="/manage-tasks" class="button small secondary">Open</a>
+    </div>
+    <div class="tracker-metrics">
+      <div class="tracker-metric">
+        <span>Pending</span>
+        <strong><%= stats.pendingTasks %></strong>
+      </div>
+      <div class="tracker-metric">
+        <span>Completed</span>
+        <strong><%= stats.completedTasks %></strong>
+      </div>
+    </div>
+    <div class="tracker-list">
+      <% if (!trackers.upcomingTasks.length) { %>
+        <p class="muted">No pending tasks found.</p>
+      <% } else { %>
+        <% trackers.upcomingTasks.forEach((item) => { %>
+          <a href="/manage-tasks/<%= item._id %>" class="tracker-item">
+            <div>
+              <strong><%= item.title %></strong>
+              <span><%= item.createdBy ? item.createdBy.name : 'Unknown' %> | <%= item.priority %> priority</span>
+            </div>
+            <time><%= new Date(item.deadline).toLocaleDateString() %></time>
+          </a>
+        <% }) %>
+      <% } %>
+    </div>
+  </article>
+
+  <article class="card tracker-card">
+    <div class="card-header">
+      <div>
+        <p class="tag">User Oversight</p>
+        <h2>Manage Users</h2>
+      </div>
+      <a href="/users" class="button small secondary">Open</a>
+    </div>
+    <div class="tracker-list">
+      <% if (!trackers.recentUsers.length) { %>
+        <p class="muted">No recent users found.</p>
+      <% } else { %>
+        <% trackers.recentUsers.forEach((user) => { %>
+          <div class="tracker-item tracker-item-static">
+            <div>
+              <strong><%= user.name %></strong>
+              <span><%= user.email %> | <%= user.role %></span>
+            </div>
+            <time><%= user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'No login yet' %></time>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </article>
+</section>
+
+<section class="chart-grid">
+  <article class="card chart-card">
+    <div class="card-header chart-header">
+      <div>
+        <p class="tag">Platform Activity</p>
+        <h2>Items Per Month</h2>
+        <p class="muted">Monthly creation volume across all users.</p>
+      </div>
+      <div class="chart-kpi">
+        <span>Total This Year</span>
+        <strong><%= chartData.tasksPerMonth.reduce((sum, value) => sum + value, 0) %></strong>
+      </div>
+    </div>
+    <div class="chart-canvas-wrap">
+      <canvas
+        id="tasksPerMonthChart"
+        data-labels='<%- JSON.stringify(chartData.monthLabels) %>'
+        data-values='<%- JSON.stringify(chartData.tasksPerMonth) %>'
+      ></canvas>
+    </div>
+  </article>
+
+  <article class="card chart-card">
+    <div class="card-header chart-header">
+      <div>
+        <p class="tag">Priority Breakdown</p>
+        <h2>Items By Priority</h2>
+        <p class="muted">Priority split across all tracked items.</p>
+      </div>
+    </div>
+    <div class="priority-chart-layout">
+      <div class="chart-canvas-wrap chart-canvas-wrap-compact">
+        <canvas
+          id="tasksByPriorityChart"
+          data-labels='<%- JSON.stringify(chartData.priorityLabels) %>'
+          data-values='<%- JSON.stringify(chartData.tasksPerPriority) %>'
+        ></canvas>
+      </div>
+      <div class="priority-summary">
+        <% chartData.priorityLabels.forEach((label, index) => { %>
+          <div class="priority-summary-item">
+            <div class="priority-summary-label">
+              <span class="legend-dot <%= label === 'High' ? 'legend-red' : label === 'Medium' ? 'legend-amber' : 'legend-green' %>"></span>
+              <span><%= label %> Priority</span>
+            </div>
+            <strong><%= chartData.tasksPerPriority[index] %></strong>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </article>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script defer src="/js/dashboard.js"></script>
+<%- include('../partials/admin-shell-end') %>

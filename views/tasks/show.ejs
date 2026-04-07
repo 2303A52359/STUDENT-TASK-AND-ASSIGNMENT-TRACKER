@@ -1,0 +1,100 @@
+<%- include('../partials/user-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="tag">Assignment Details</p>
+    <h1><%= task.title %></h1>
+    <p class="muted"><%= task.subject || 'General' %><%= task.course ? ` - ${task.course}` : '' %></p>
+  </div>
+  <div class="table-actions">
+    <a href="<%= basePath %>" class="button secondary">Back</a>
+  </div>
+</section>
+
+<section class="detail-grid">
+  <article class="card">
+    <h2>Overview</h2>
+    <dl class="details-list">
+      <div>
+        <dt>Subject</dt>
+        <dd><%= task.subject || 'Not provided' %></dd>
+      </div>
+      <div>
+        <dt>Course</dt>
+        <dd><%= task.course || 'Not provided' %></dd>
+      </div>
+      <div>
+        <dt>Assignment Type</dt>
+        <dd><%= task.assignmentType || 'Assignment' %></dd>
+      </div>
+      <div>
+        <dt>Description</dt>
+        <dd><%= task.description || 'No description added.' %></dd>
+      </div>
+      <div>
+        <dt>Deadline</dt>
+        <dd><%= new Date(task.deadline).toLocaleString() %></dd>
+      </div>
+      <div>
+        <dt>Priority</dt>
+        <dd><span class="priority priority-<%= task.priority.toLowerCase() %>"><%= task.priority %></span></dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd><%= task.completed ? 'Completed' : 'Pending' %></dd>
+      </div>
+      <div>
+        <dt>Assigned By</dt>
+        <dd><%= task.createdBy ? `${task.createdBy.name} (${task.createdBy.email})` : 'Admin' %></dd>
+      </div>
+      <div>
+        <dt>Created At</dt>
+        <dd><%= new Date(task.createdAt).toLocaleString() %></dd>
+      </div>
+      <div>
+        <dt>Attachment</dt>
+        <dd>
+          <% if (task.file) { %>
+            <a href="<%= task.file %>" target="_blank" rel="noreferrer">Open attachment</a>
+          <% } else { %>
+            No file uploaded
+          <% } %>
+        </dd>
+      </div>
+      <div>
+        <dt>My Submission</dt>
+        <dd>
+          <% if (task.submissionFile) { %>
+            <a href="<%= task.submissionFile %>" target="_blank" rel="noreferrer">Open submitted file</a>
+            <div class="muted small-text">Submitted on <%= new Date(task.submittedAt).toLocaleString() %></div>
+          <% } else { %>
+            No submission uploaded yet
+          <% } %>
+        </dd>
+      </div>
+    </dl>
+  </article>
+
+  <article class="card">
+    <h2>Tracking Action</h2>
+    <div class="stack-actions">
+      <form action="<%= basePath %>/<%= task._id %>/toggle?_method=PATCH" method="POST">
+        <button type="submit" class="button full-width">
+          <%= task.completed ? 'Mark as Pending' : 'Mark as Completed' %>
+        </button>
+      </form>
+      <form action="<%= basePath %>/<%= task._id %>/submit" method="POST" enctype="multipart/form-data" class="form-grid">
+        <label>
+          Submit Assignment File
+          <input type="file" name="submissionFile" accept=".pdf,image/*" required />
+        </label>
+        <button type="submit" class="button full-width secondary"><%= task.submissionFile ? 'Replace Submission' : 'Submit File' %></button>
+      </form>
+      <% if (task.submissionFile) { %>
+        <form action="<%= basePath %>/<%= task._id %>/submission?_method=DELETE" method="POST">
+          <button type="submit" class="button full-width danger" onclick="return confirm('Delete your submitted file?');">Delete Submitted File</button>
+        </form>
+      <% } %>
+    </div>
+  </article>
+</section>
+<%- include('../partials/user-shell-end') %>

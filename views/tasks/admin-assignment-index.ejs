@@ -1,0 +1,93 @@
+<%- include('../partials/admin-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header">
+  <div>
+    <p class="tag">Administration</p>
+    <h1>Manage Assignments</h1>
+    <p class="muted">Create assignments, assign them to users, and monitor completion.</p>
+  </div>
+  <a href="/manage-assignments/new" class="button">Assign Assignment</a>
+</section>
+
+<section class="mini-stats-grid">
+  <article class="mini-stat-card">
+    <span>Pending</span>
+    <strong><%= summary.pending %></strong>
+  </article>
+  <article class="mini-stat-card">
+    <span>Completed</span>
+    <strong><%= summary.completed %></strong>
+  </article>
+  <article class="mini-stat-card mini-stat-card-danger">
+    <span>Overdue</span>
+    <strong><%= summary.overdue %></strong>
+  </article>
+</section>
+
+<section class="card">
+  <form method="GET" action="/manage-assignments" class="toolbar">
+    <input type="text" name="search" placeholder="Search by title, subject, course, or type" value="<%= query.search %>" />
+    <select name="status">
+      <option value="" <%= query.status === '' ? 'selected' : '' %>>All Status</option>
+      <option value="pending" <%= query.status === 'pending' ? 'selected' : '' %>>Pending</option>
+      <option value="completed" <%= query.status === 'completed' ? 'selected' : '' %>>Completed</option>
+    </select>
+    <select name="sort">
+      <option value="newest" <%= query.sort === 'newest' ? 'selected' : '' %>>Newest</option>
+      <option value="oldest" <%= query.sort === 'oldest' ? 'selected' : '' %>>Oldest</option>
+      <option value="deadlineAsc" <%= query.sort === 'deadlineAsc' ? 'selected' : '' %>>Deadline Asc</option>
+      <option value="deadlineDesc" <%= query.sort === 'deadlineDesc' ? 'selected' : '' %>>Deadline Desc</option>
+      <option value="priority" <%= query.sort === 'priority' ? 'selected' : '' %>>Priority</option>
+    </select>
+    <button type="submit" class="button">Apply</button>
+  </form>
+
+  <% if (!tasks.length) { %>
+    <p class="empty-state">No assignments found.</p>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>Subject</th>
+            <th>Type</th>
+            <th>Deadline</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+            <th>Assigned By</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tasks.forEach((task) => { %>
+            <% const isOverdue = !task.completed && new Date(task.deadline) < new Date(); %>
+            <tr class="<%= isOverdue ? 'row-overdue' : '' %>">
+              <td>
+                <strong><%= task.title %></strong>
+                <div class="muted small-text"><%= task.course || 'No course specified' %></div>
+              </td>
+              <td><%= task.subject || 'General' %></td>
+              <td><%= task.assignmentType || 'Assignment' %></td>
+              <td><%= new Date(task.deadline).toLocaleString() %></td>
+              <td><span class="priority priority-<%= task.priority.toLowerCase() %>"><%= task.priority %></span></td>
+              <td><span class="status <%= task.completed ? 'status-complete' : 'status-pending' %>"><%= task.completed ? 'Completed' : 'Pending' %></span></td>
+              <td><%= task.assignedTo ? task.assignedTo.name : 'Unassigned' %></td>
+              <td><%= task.createdBy ? task.createdBy.name : 'Unknown' %></td>
+              <td>
+                <div class="table-actions">
+                  <a href="/manage-assignments/<%= task._id %>" class="button small secondary">View</a>
+                  <a href="/manage-assignments/<%= task._id %>/edit" class="button small warning">Edit</a>
+                  <form action="/manage-assignments/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this assignment?');">
+                    <button type="submit" class="button small danger">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+<%- include('../partials/admin-shell-end') %>

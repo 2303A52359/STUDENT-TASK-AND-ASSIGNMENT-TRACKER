@@ -1,0 +1,43 @@
+<%- include('../partials/user-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="tag">Profile Settings</p>
+    <h1>My Profile</h1>
+    <p class="muted">View your account details and keep your profile information current.</p>
+  </div>
+  <div class="table-actions">
+    <a href="/profile/edit" class="button">Edit Profile</a>
+    <a href="/profile/password" class="button secondary">Change Password</a>
+  </div>
+</section>
+
+<section class="detail-grid">
+  <article class="card profile-card">
+    <img src="<%= user.profilePic %>" alt="<%= user.name %>" class="avatar avatar-large" />
+    <h2><%= user.name %></h2>
+    <p class="muted"><%= user.email %></p>
+  </article>
+
+  <article class="card">
+    <h2>Account Information</h2>
+    <dl class="details-list">
+      <div>
+        <dt>Name</dt>
+        <dd><%= user.name %></dd>
+      </div>
+      <div>
+        <dt>Email</dt>
+        <dd><%= user.email %></dd>
+      </div>
+      <div>
+        <dt>Last Login</dt>
+        <dd><%= user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'No login recorded yet' %></dd>
+      </div>
+      <div>
+        <dt>Account Created</dt>
+        <dd><%= new Date(user.createdAt).toLocaleString() %></dd>
+      </div>
+    </dl>
+  </article>
+</section>
+<%- include('../partials/user-shell-end') %>

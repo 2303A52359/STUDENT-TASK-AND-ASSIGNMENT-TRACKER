@@ -1,0 +1,8 @@
+<%- include('head', { title, currentUser }) %>
+<div class="app-shell">
+  <%- include('user-sidebar', { currentPath, currentUser }) %>
+  <div class="content-shell">
+    <%- include('user-topbar', { currentUser }) %>
+    <main class="page-content">
+      <%- include('flash') %>
+

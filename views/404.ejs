@@ -1,0 +1,11 @@
+<%- include('partials/head', { title, currentUser }) %>
+<main class="simple-state">
+  <div class="card">
+    <p class="tag">404</p>
+    <h1>Page Not Found</h1>
+    <p class="muted">The page you requested does not exist or has been moved.</p>
+    <a href="<%= currentUser ? '/dashboard' : '/login' %>" class="button">Go Back</a>
+  </div>
+</main>
+<%- include('partials/footer') %>
+

@@ -1,0 +1,56 @@
+<%- include('../partials/admin-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header">
+  <div>
+    <p class="tag">Administration</p>
+    <h1>User Management</h1>
+    <p class="muted">Review users, update roles, and remove accounts when required.</p>
+  </div>
+</section>
+
+<section class="card">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Last Login</th>
+          <th>Work Items Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user) => { %>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <img src="<%= user.profilePic %>" alt="<%= user.name %>" class="avatar avatar-small" />
+                <div>
+                  <strong><%= user.name %></strong>
+                  <div class="muted small-text"><%= user.email %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <form action="/users/<%= user._id %>/role?_method=PATCH" method="POST" class="inline-form">
+                <select name="role">
+                  <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+                  <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                </select>
+                <button type="submit" class="button small">Update</button>
+              </form>
+            </td>
+            <td><%= user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never' %></td>
+            <td><%= user.taskCount %></td>
+            <td>
+              <form action="/users/<%= user._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this user and all of their tasks and assignments?');">
+                <button type="submit" class="button small danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../partials/admin-shell-end') %>

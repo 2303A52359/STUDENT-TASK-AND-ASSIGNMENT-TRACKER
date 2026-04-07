@@ -1,0 +1,20 @@
+<aside class="sidebar sidebar-user">
+  <div class="sidebar-brand">
+    <div class="brand-badge">ST</div>
+    <div>
+      <h2>Student Tracker</h2>
+      <p>Your personal task and assignment workspace</p>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="/dashboard" class="<%= currentPath.startsWith('/dashboard') ? 'active' : '' %>">Dashboard</a>
+    <a href="/tasks" class="<%= currentPath.startsWith('/tasks') ? 'active' : '' %>">My Tasks</a>
+    <a href="/assignments" class="<%= currentPath.startsWith('/assignments') ? 'active' : '' %>">Assignments</a>
+    <a href="/profile" class="<%= currentPath.startsWith('/profile') ? 'active' : '' %>">Profile</a>
+  </nav>
+
+  <form action="/logout" method="POST" class="sidebar-logout">
+    <button type="submit" class="button full-width secondary">Logout</button>
+  </form>
+</aside>

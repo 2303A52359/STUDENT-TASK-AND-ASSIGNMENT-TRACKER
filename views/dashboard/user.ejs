@@ -1,0 +1,183 @@
+<%- include('../partials/user-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-hero">
+  <div class="page-hero-copy">
+    <p class="tag">Overview</p>
+    <h1>Student Dashboard</h1>
+    <p class="muted">A focused personal workspace for deadlines, priorities, and daily academic progress.</p>
+    <div class="hero-inline-stats">
+      <span>Due Today: <strong><%= stats.dueTodayItems %></strong></span>
+      <span>Tasks Pending: <strong><%= stats.pendingTasks %></strong></span>
+      <span>Assignments Pending: <strong><%= stats.pendingAssignments %></strong></span>
+    </div>
+  </div>
+  <div class="page-hero-actions">
+    <a href="/tasks" class="button">Open Tasks</a>
+    <a href="/assignments" class="button secondary">Open Assignments</a>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <article class="stat-card">
+    <span>Total Items</span>
+    <strong><%= stats.totalItems %></strong>
+  </article>
+  <article class="stat-card">
+    <span>My Tasks</span>
+    <strong><%= stats.totalTasks %></strong>
+  </article>
+  <article class="stat-card">
+    <span>My Assignments</span>
+    <strong><%= stats.totalAssignments %></strong>
+  </article>
+  <article class="stat-card">
+    <span>Overdue Items</span>
+    <strong><%= stats.overdueItems %></strong>
+  </article>
+</section>
+
+<section class="mini-stats-grid">
+  <article class="mini-stat-card">
+    <span>Receive</span>
+    <strong>Assigned Tasks</strong>
+    <p class="muted">See the work the admin has assigned to you.</p>
+  </article>
+  <article class="mini-stat-card">
+    <span>Track</span>
+    <strong>Assignments</strong>
+    <p class="muted">Monitor pending, completed, and overdue assigned work.</p>
+  </article>
+  <article class="mini-stat-card">
+    <span>Complete</span>
+    <strong>Progress</strong>
+    <p class="muted">Mark your assigned tasks and assignments as completed.</p>
+  </article>
+</section>
+
+<section class="tracker-split-grid">
+  <article class="card tracker-card">
+    <div class="card-header">
+      <div>
+        <p class="tag">My Tasks</p>
+        <h2>Upcoming Work</h2>
+      </div>
+      <a href="/tasks" class="button small secondary">Open</a>
+    </div>
+    <div class="tracker-metrics">
+      <div class="tracker-metric">
+        <span>Pending</span>
+        <strong><%= stats.pendingTasks %></strong>
+      </div>
+      <div class="tracker-metric">
+        <span>Completed</span>
+        <strong><%= stats.completedTasks %></strong>
+      </div>
+    </div>
+    <div class="tracker-list">
+      <% if (!trackers.upcomingTasks.length) { %>
+        <p class="muted">No upcoming tasks.</p>
+      <% } else { %>
+        <% trackers.upcomingTasks.forEach((item) => { %>
+          <a href="/tasks/<%= item._id %>" class="tracker-item">
+            <div>
+              <strong><%= item.title %></strong>
+              <span><%= item.subject || 'General' %> | <%= item.priority %> priority</span>
+            </div>
+            <time><%= new Date(item.deadline).toLocaleDateString() %></time>
+          </a>
+        <% }) %>
+      <% } %>
+    </div>
+  </article>
+
+  <article class="card tracker-card">
+    <div class="card-header">
+      <div>
+        <p class="tag">Assignments</p>
+        <h2>Upcoming Deadlines</h2>
+      </div>
+      <a href="/assignments" class="button small secondary">Open</a>
+    </div>
+    <div class="tracker-metrics">
+      <div class="tracker-metric">
+        <span>Pending</span>
+        <strong><%= stats.pendingAssignments %></strong>
+      </div>
+      <div class="tracker-metric">
+        <span>Completed</span>
+        <strong><%= stats.completedAssignments %></strong>
+      </div>
+    </div>
+    <div class="tracker-list">
+      <% if (!trackers.upcomingAssignments.length) { %>
+        <p class="muted">No upcoming assignments.</p>
+      <% } else { %>
+        <% trackers.upcomingAssignments.forEach((item) => { %>
+          <a href="/assignments/<%= item._id %>" class="tracker-item">
+            <div>
+              <strong><%= item.title %></strong>
+              <span><%= item.subject || 'General' %> | <%= item.priority %> priority</span>
+            </div>
+            <time><%= new Date(item.deadline).toLocaleDateString() %></time>
+          </a>
+        <% }) %>
+      <% } %>
+    </div>
+  </article>
+</section>
+
+<section class="chart-grid">
+  <article class="card chart-card">
+    <div class="card-header chart-header">
+      <div>
+        <p class="tag">My Progress</p>
+        <h2>Tasks and Assignments Per Month</h2>
+        <p class="muted">Month-by-month view of everything you have created.</p>
+      </div>
+      <div class="chart-kpi">
+        <span>Total This Year</span>
+        <strong><%= chartData.tasksPerMonth.reduce((sum, value) => sum + value, 0) %></strong>
+      </div>
+    </div>
+    <div class="chart-canvas-wrap">
+      <canvas
+        id="tasksPerMonthChart"
+        data-labels='<%- JSON.stringify(chartData.monthLabels) %>'
+        data-values='<%- JSON.stringify(chartData.tasksPerMonth) %>'
+      ></canvas>
+    </div>
+  </article>
+
+  <article class="card chart-card">
+    <div class="card-header chart-header">
+      <div>
+        <p class="tag">Priority Breakdown</p>
+        <h2>My Items By Priority</h2>
+        <p class="muted">Priority split across your own tasks and assignments.</p>
+      </div>
+    </div>
+    <div class="priority-chart-layout">
+      <div class="chart-canvas-wrap chart-canvas-wrap-compact">
+        <canvas
+          id="tasksByPriorityChart"
+          data-labels='<%- JSON.stringify(chartData.priorityLabels) %>'
+          data-values='<%- JSON.stringify(chartData.tasksPerPriority) %>'
+        ></canvas>
+      </div>
+      <div class="priority-summary">
+        <% chartData.priorityLabels.forEach((label, index) => { %>
+          <div class="priority-summary-item">
+            <div class="priority-summary-label">
+              <span class="legend-dot <%= label === 'High' ? 'legend-red' : label === 'Medium' ? 'legend-amber' : 'legend-green' %>"></span>
+              <span><%= label %> Priority</span>
+            </div>
+            <strong><%= chartData.tasksPerPriority[index] %></strong>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </article>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script defer src="/js/dashboard.js"></script>
+<%- include('../partials/user-shell-end') %>

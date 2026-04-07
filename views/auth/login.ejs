@@ -1,0 +1,26 @@
+<%- include('../partials/auth-shell-start', { title }) %>
+<div class="card auth-card">
+  <h2>Login</h2>
+  <p class="muted">Use your email and password to access the dashboard.</p>
+
+  <form action="/login" method="POST" class="form-grid">
+    <label>
+      Email
+      <input type="email" name="email" placeholder="you@example.com" required />
+    </label>
+
+    <label>
+      Password
+      <input type="password" name="password" placeholder="Enter your password" required />
+    </label>
+
+    <button type="submit" class="button">Login</button>
+  </form>
+
+  <p class="form-footer">
+    Need an account?
+    <a href="/register">Create one here</a>
+  </p>
+</div>
+<%- include('../partials/auth-shell-end') %>
+

@@ -1,0 +1,54 @@
+<%- include('../partials/admin-shell-start', { title, currentUser, currentPath }) %>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="tag">Administration</p>
+    <h1>Task Details</h1>
+    <p class="muted">Admin view of a user task.</p>
+  </div>
+  <div class="table-actions">
+    <a href="/manage-tasks/<%= task._id %>/edit" class="button warning">Edit</a>
+    <a href="/manage-tasks" class="button secondary">Back</a>
+  </div>
+</section>
+
+<section class="detail-grid">
+  <article class="card">
+    <h2>Overview</h2>
+    <dl class="details-list">
+      <div><dt>Title</dt><dd><%= task.title %></dd></div>
+      <div><dt>Subject</dt><dd><%= task.subject || 'General' %></dd></div>
+      <div><dt>Description</dt><dd><%= task.description || 'No description added.' %></dd></div>
+      <div><dt>Deadline</dt><dd><%= new Date(task.deadline).toLocaleString() %></dd></div>
+      <div><dt>Priority</dt><dd><span class="priority priority-<%= task.priority.toLowerCase() %>"><%= task.priority %></span></dd></div>
+      <div><dt>Status</dt><dd><%= task.completed ? 'Completed' : 'Pending' %></dd></div>
+      <div><dt>Assigned To</dt><dd><%= task.assignedTo ? `${task.assignedTo.name} (${task.assignedTo.email})` : 'Unassigned' %></dd></div>
+      <div><dt>Created By</dt><dd><%= task.createdBy ? `${task.createdBy.name} (${task.createdBy.email})` : 'Unknown' %></dd></div>
+      <div>
+        <dt>Attachment</dt>
+        <dd><% if (task.file) { %><a href="<%= task.file %>" target="_blank" rel="noreferrer">Open attachment</a><% } else { %>No file uploaded<% } %></dd>
+      </div>
+      <div>
+        <dt>Student Submission</dt>
+        <dd>
+          <% if (task.submissionFile) { %>
+            <a href="<%= task.submissionFile %>" target="_blank" rel="noreferrer">Open submitted file</a>
+            <div class="muted small-text">Submitted on <%= new Date(task.submittedAt).toLocaleString() %></div>
+          <% } else { %>
+            No student submission yet
+          <% } %>
+        </dd>
+      </div>
+    </dl>
+  </article>
+
+  <article class="card">
+    <h2>Admin Actions</h2>
+    <div class="stack-actions">
+      <a href="/manage-tasks/<%= task._id %>/edit" class="button full-width warning">Edit Task</a>
+      <form action="/manage-tasks/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this task?');">
+        <button type="submit" class="button full-width danger">Delete Task</button>
+      </form>
+    </div>
+  </article>
+</section>
+<%- include('../partials/admin-shell-end') %>

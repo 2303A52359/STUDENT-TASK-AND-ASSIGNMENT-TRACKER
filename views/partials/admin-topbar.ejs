@@ -1,0 +1,32 @@
+<header class="topbar topbar-admin">
+  <button class="menu-toggle" type="button" data-menu-toggle>
+    Menu
+  </button>
+
+  <div class="notification-panel">
+    <div class="notification-panel-header">
+      <strong>Messages</strong>
+      <span class="notification-badge"><%= unreadNotificationCount %></span>
+    </div>
+    <% if (notifications && notifications.length) { %>
+      <div class="notification-list">
+        <% notifications.forEach((notification) => { %>
+          <a href="<%= notification.link || '#' %>" class="notification-item <%= notification.readAt ? '' : 'notification-item-unread' %>">
+            <strong><%= notification.title %></strong>
+            <span><%= notification.message %></span>
+          </a>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="notification-empty">No messages yet.</div>
+    <% } %>
+  </div>
+
+  <div class="topbar-user">
+    <img src="<%= currentUser.profilePic %>" alt="Profile" class="avatar avatar-small" />
+    <div>
+      <strong><%= currentUser.name %></strong>
+      <p>Administrator</p>
+    </div>
+  </div>
+</header>

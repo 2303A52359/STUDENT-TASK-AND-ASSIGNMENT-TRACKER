@@ -1,0 +1,10 @@
+<%- include('partials/head', { title, currentUser }) %>
+<main class="simple-state">
+  <div class="card">
+    <p class="tag">Error</p>
+    <h1>Something went wrong</h1>
+    <p class="muted"><%= error.message || 'An unexpected error occurred.' %></p>
+    <a href="<%= currentUser ? '/dashboard' : '/login' %>" class="button">Return</a>
+  </div>
+</main>
+<%- include('partials/footer') %>

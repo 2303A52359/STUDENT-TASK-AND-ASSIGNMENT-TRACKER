@@ -1,0 +1,20 @@
+<aside class="sidebar sidebar-admin">
+  <div class="sidebar-brand">
+    <div class="brand-badge">ST</div>
+    <div>
+      <h2>Admin Panel</h2>
+      <p>Task and assignment control</p>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="/dashboard" class="<%= currentPath.startsWith('/dashboard') ? 'active' : '' %>">Dashboard</a>
+    <a href="/manage-tasks" class="<%= currentPath.startsWith('/manage-tasks') ? 'active' : '' %>">Manage Tasks</a>
+    <a href="/manage-assignments" class="<%= currentPath.startsWith('/manage-assignments') ? 'active' : '' %>">Manage Assignments</a>
+    <a href="/users" class="<%= currentPath.startsWith('/users') ? 'active' : '' %>">Manage Users</a>
+  </nav>
+
+  <form action="/logout" method="POST" class="sidebar-logout">
+    <button type="submit" class="button full-width secondary">Logout</button>
+  </form>
+</aside>

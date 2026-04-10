@@ -1,0 +1,30 @@
+<%- include('../partials/auth-shell-start', { title }) %>
+<div class="card auth-card">
+  <h2>Admin Login</h2>
+  <p class="muted">Use your administrator email and password to access the admin dashboard.</p>
+
+  <form action="/admin/login" method="POST" class="form-grid">
+    <label>
+      Admin Email
+      <input type="email" name="email" placeholder="admin@example.com" required />
+    </label>
+
+    <label>
+      Password
+      <input type="password" name="password" placeholder="Enter your password" required />
+    </label>
+
+    <button type="submit" class="button">Admin Login</button>
+  </form>
+
+  <p class="form-footer">
+    Student or regular user?
+    <a href="/login">Go to user login</a>
+  </p>
+
+  <p class="form-footer">
+    Need a new admin account?
+    <a href="/admin/register">Create admin account</a>
+  </p>
+</div>
+<%- include('../partials/auth-shell-end') %>
